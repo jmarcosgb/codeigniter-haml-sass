@@ -123,6 +123,79 @@
 
 /*
  * ------------------------------------------------------
+ *  Start the parsing for SASS files
+ * ------------------------------------------------------
+ */
+	$_ci_sass_asset_path	= config_item('sass_asset_path');
+	$_ci_sass_output_path	= config_item('sass_output_path');
+	$_ci_sass_cache_path	= config_item('sass_cache_path');
+
+	if ($_ci_sass_cache_path == '')
+	{
+		$_ci_sass_cache_path = APPPATH . "cache/sass-cache/";
+	}
+	else
+	{
+		if ( ! is_dir($_ci_sass_cache_path) )
+		{
+			show_error('Invalid SASS cache path! Check your configuration file.');
+		}		
+	}
+
+	if ($_ci_sass_asset_path == '')
+	{
+		$_ci_sass_asset_path = APPPATH . "assets/";
+	} else {
+		if ( ! is_dir($_ci_sass_asset_path) )
+		{
+			show_error('Invalid SASS asset path! Check your configuration file.');
+		}
+	}
+
+	if (!file_exists($_ci_sass_asset_path))
+	{
+		mkdir($_ci_sass_asset_path);
+	}
+
+	$_ci_sass_assets = glob_recursive($_ci_sass_asset_path . '/*.sass');
+	$_ci_sass_assets = array_merge($_ci_sass_assets,  glob_recursive($_ci_sass_asset_path . '/*.scss'));
+
+	if (count($_ci_sass_assets) > 0)
+	{
+		if ($_ci_sass_output_path == '')
+		{
+			$_ci_sass_output_path = FCPATH . "css/";
+		} else {
+			if ( ! is_dir($_ci_sass_output_path) )
+			{
+				show_error('Invalid SASS output path! Check your configuration file.');
+			}
+		}
+
+		if (!file_exists($_ci_sass_output_path))
+		{
+			mkdir($_ci_sass_output_path);
+		}
+
+		load_class('SassParser', 'libraries/phamlp/sass', '');
+		$SASS = new SassParser(array("cache_location" => $_ci_sass_cache_path));
+
+		foreach($_ci_sass_assets as $_ci_sass_asset)
+		{
+			$_ci_sass_asset_out	= $_ci_sass_output_path . str_replace($_ci_sass_asset_path, "", $_ci_sass_asset);
+			$_ci_sass_asset_out = str_replace(".sass", ".css", $_ci_sass_asset_out);
+			$_ci_sass_asset_out = str_replace(".scss", ".css", $_ci_sass_asset_out);
+
+			if( !file_exists(dirname($_ci_sass_asset_out)) ) {
+				mkdir(dirname($_ci_sass_asset_out));
+			}
+
+			file_put_contents($_ci_sass_asset_out, $SASS->toCss($_ci_sass_asset, TRUE));
+		}
+	}
+
+/*
+ * ------------------------------------------------------
  *  Instantiate the hooks class
  * ------------------------------------------------------
  */

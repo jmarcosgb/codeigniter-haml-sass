@@ -48,6 +48,10 @@ class Welcome extends CI_Controller {
 		{
 			$this->load->view('welcome_message_haml');
 		}
+		elseif($this->input->get('sass') == 'true')
+		{
+			$this->load->view('welcome_message_sass');			
+		}
 		else
 		{
 			$this->load->view('welcome_message');

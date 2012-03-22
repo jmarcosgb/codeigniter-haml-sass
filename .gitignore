@@ -1,8 +1,12 @@
 .DS_Store
+*.sassc
 
 application/cache/*
 !application/cache/index.html
 !application/cache/.htaccess
+!application/cache/sass-cache/
+!application/cache/sass-cache/index.html
+!application/cache/sass-cache/.htaccess
 
 application/logs/*
 !application/logs/index.html

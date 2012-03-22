@@ -407,5 +407,18 @@ $config['proxy_ips'] = '';
 */
 $config['haml_cache_base_path'] = '';
 
+/*
+|--------------------------------------------------------------------------
+| SASS Settings
+|--------------------------------------------------------------------------
+|
+| sass_cache_path: The path to store cached SASS files, default is APPPATH/cache/sass-cache
+| sass_asset_path: The path where our .sass/.scss files are, default is APPPATH/assets
+| sass_output_path: The path where the generated .css files will be saved, default is FCPATH/css
+*/
+$config['sass_cache_path'] = '';
+$config['sass_asset_path'] = '';
+$config['sass_output_path'] = '';
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

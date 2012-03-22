@@ -570,5 +570,27 @@ if ( ! function_exists('html_escape'))
 	}
 }
 
+/**
+* Returns HTML escaped variable
+*
+* @access	public
+* @param	mixed
+* @return	mixed
+*/
+if ( ! function_exists('glob_recursive'))
+{
+	function glob_recursive($pattern, $flags = 0)
+	{
+		$files	= glob($pattern, $flags);
+
+		foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR) as $item)
+		{
+			$files = array_merge($files, glob_recursive($item.'/'.basename($pattern), $flags));
+		}
+
+		return $files;
+	}
+}
+
 /* End of file Common.php */
 /* Location: ./system/core/Common.php */
