@@ -397,6 +397,15 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+/*
+|--------------------------------------------------------------------------
+| HAML Cache Path
+|--------------------------------------------------------------------------
+|
+| The path that the HAML parser will stored cached files.
+| If you don't specify a path, it will use APP_PATH/cache
+*/
+$config['haml_cache_base_path'] = '';
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */

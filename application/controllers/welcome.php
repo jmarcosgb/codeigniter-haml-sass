@@ -44,7 +44,14 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		if($this->input->get('haml') == 'true')
+		{
+			$this->load->view('welcome_message_haml');
+		}
+		else
+		{
+			$this->load->view('welcome_message');
+		}
 	}
 }
 

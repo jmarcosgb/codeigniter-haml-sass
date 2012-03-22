@@ -99,6 +99,7 @@
 
 	<div id="body">
 		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
+		<p>You can use <a href="?haml=true">this link</a> to see a page rendered with a HAML template.</p>
 
 		<p>If you would like to edit this page you'll find it located at:</p>
 		<code>application/views/welcome_message.php</code>

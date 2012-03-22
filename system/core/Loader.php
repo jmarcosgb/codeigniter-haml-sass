@@ -777,14 +777,30 @@ class CI_Loader {
 		}
 		else
 		{
+			$_ci_is_haml_view = false;
+			$_ci_search_for_haml_view = false;
 			$_ci_ext = pathinfo($_ci_view, PATHINFO_EXTENSION);
 			$_ci_file = ($_ci_ext == '') ? $_ci_view.'.php' : $_ci_view;
+
+			if ($_ci_ext == '')
+			{
+				$_ci_file_haml = $_ci_view.'.haml';
+				$_ci_search_for_haml_view = true;
+			}
 
 			foreach ($this->_ci_view_paths as $view_file => $cascade)
 			{
 				if (file_exists($view_file.$_ci_file))
 				{
 					$_ci_path = $view_file.$_ci_file;
+					$file_exists = TRUE;
+					break;
+				}
+
+				if ($_ci_search_for_haml_view == TRUE && file_exists($view_file.$_ci_file_haml))
+				{
+					$_ci_path = $view_file.$_ci_file_haml;
+					$_ci_is_haml_view = TRUE;
 					$file_exists = TRUE;
 					break;
 				}
@@ -838,6 +854,37 @@ class CI_Loader {
 		 *    then stop the timer it won't be accurate.
 		 */
 		ob_start();
+
+		if($_ci_is_haml_view)
+		{
+			$this->load->library('phamlp/haml/HamlParser');
+
+			$_ci_haml_cache_path_base = config_item('haml_cache_base_path');
+			$_ci_haml_cache_path_base = ($_ci_haml_cache_path_base != '' ? $_ci_haml_cache_path_base : APPPATH.'cache/');
+			$_ci_haml_cache_path = $_ci_haml_cache_path_base . strtolower(get_class(get_instance()));
+			$_ci_haml_file = $_ci_view . 'php';
+
+			if (!is_writable($_ci_haml_cache_path_base))
+			{
+				$_ci_haml_error = 'The HAML cache path(' . $_ci_haml_cache_path . ') isn\'t writtable!';
+				log_message('error', $_ci_haml_error);
+				
+				if (ENVIRONMENT != 'production')
+				{
+					show_error($_ci_haml_error);
+				}
+			}
+
+			if (!file_exists($_ci_haml_cache_path))
+			{
+				mkdir($_ci_haml_cache_path);
+			}
+
+			$haml = new HamlParser();
+			$haml = $haml->parse($view_file.$_ci_file_haml, $_ci_haml_cache_path);
+
+			$_ci_path = $haml;
+		}
 
 		// If the PHP installation does not support short tags we'll
 		// do a little string replacement, changing the short tags
