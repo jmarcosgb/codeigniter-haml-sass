@@ -210,7 +210,6 @@
 
 			if($_ci_sass_do_write == TRUE)
 			{
-				echo "write D:";
 				file_put_contents($_ci_sass_asset_out, $_ci_sass_css_output);
 			}
 		}
