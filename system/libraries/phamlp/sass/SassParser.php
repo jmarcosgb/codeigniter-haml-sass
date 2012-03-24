@@ -241,6 +241,12 @@ class SassParser {
 	 * @see _vendorProperties
 	 */
 	private $vendor_properties = array();
+
+	/**
+	 * cacme_from_cache:
+	 * Specifies if the current file output came from a cached file
+	 */
+	private $came_from_cache = false;
 	
 	/**#@-*/
 	/**
@@ -356,6 +362,10 @@ class SassParser {
 	public function getCache() {
 		return $this->cache; 
 	}
+
+	public function getCame_from_cache() {
+		return $this->came_from_cache;
+	}
 	
 	public function getCache_location() {
 		return $this->cache_location; 
@@ -458,6 +468,7 @@ class SassParser {
 	public function parse($source, $isFile = true) {
 		if ($isFile) {
 			$this->filename = SassFile::getFile($source, $this);
+			$this->came_from_cache = false;
 			
 			if ($isFile) {
 				$this->syntax = substr($this->filename, -4);
@@ -469,6 +480,8 @@ class SassParser {
 			if ($this->cache) {
 				$cached = SassFile::getCachedFile($this->filename, $this->cache_location);
 				if ($cached !== false) {
+					$this->came_from_cache = true;
+
 					return $cached;
 				}
 			}

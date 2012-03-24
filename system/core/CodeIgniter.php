@@ -145,7 +145,9 @@
 	if ($_ci_sass_asset_path == '')
 	{
 		$_ci_sass_asset_path = APPPATH . "assets/";
-	} else {
+	}
+	else
+	{
 		if ( ! is_dir($_ci_sass_asset_path) )
 		{
 			show_error('Invalid SASS asset path! Check your configuration file.');
@@ -165,10 +167,17 @@
 		if ($_ci_sass_output_path == '')
 		{
 			$_ci_sass_output_path = FCPATH . "css/";
-		} else {
+		}
+		else
+		{
 			if ( ! is_dir($_ci_sass_output_path) )
 			{
 				show_error('Invalid SASS output path! Check your configuration file.');
+			}
+
+			if (! is_readable($_ci_sass_output_path))
+			{
+				show_error('Your SASS output path isn\'t writtable, check the permissions and try again.');
 			}
 		}
 
@@ -190,7 +199,20 @@
 				mkdir(dirname($_ci_sass_asset_out));
 			}
 
-			file_put_contents($_ci_sass_asset_out, $SASS->toCss($_ci_sass_asset, TRUE));
+			$_ci_sass_css_output = $SASS->toCss($_ci_sass_asset, TRUE);
+			$_ci_sass_do_write = FALSE;
+
+			if (($SASS->getCame_from_cache() && !file_exists($_ci_sass_asset_out)) ||
+				(!$SASS->getCame_from_cache()))
+			{
+				$_ci_sass_do_write = TRUE;
+			}
+
+			if($_ci_sass_do_write == TRUE)
+			{
+				echo "write D:";
+				file_put_contents($_ci_sass_asset_out, $_ci_sass_css_output);
+			}
 		}
 	}
 
