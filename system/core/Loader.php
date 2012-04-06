@@ -861,12 +861,12 @@ class CI_Loader {
 
 			$_ci_haml_cache_path_base = config_item('haml_cache_base_path');
 			$_ci_haml_cache_path_base = ($_ci_haml_cache_path_base != '' ? $_ci_haml_cache_path_base : APPPATH.'cache/');
-			$_ci_haml_cache_path = $_ci_haml_cache_path_base . strtolower(get_class(get_instance()));
+			$_ci_haml_cache_path = $_ci_haml_cache_path_base . $this->router->fetch_directory() . strtolower(get_class(get_instance()));
 			$_ci_haml_file = $_ci_view . 'php';
 
 			if (!is_writable($_ci_haml_cache_path_base))
 			{
-				$_ci_haml_error = 'The HAML cache path(' . $_ci_haml_cache_path . ') isn\'t writtable!';
+				$_ci_haml_error = 'The HAML cache path(' . $_ci_haml_cache_path_base . ') isn\'t writtable!';
 				log_message('error', $_ci_haml_error);
 				
 				if (ENVIRONMENT != 'production')
@@ -877,7 +877,20 @@ class CI_Loader {
 
 			if (!file_exists($_ci_haml_cache_path))
 			{
-				mkdir($_ci_haml_cache_path);
+				$_ci_haml_cache_path_array = explode("/", str_replace($_ci_haml_cache_path_base, '', $_ci_haml_cache_path));
+
+				// Let's go see if the cache structure exists then =)
+				if(count($_ci_haml_cache_path_array) > 1) {
+					for($_ci_haml_cache_path_counter = 0; $_ci_haml_cache_path_counter < count($_ci_haml_cache_path_array); $_ci_haml_cache_path_counter++) {
+						$_ci_haml_cache_path_array_slice = $_ci_haml_cache_path_base . join("/", array_slice($_ci_haml_cache_path_array, 0, $_ci_haml_cache_path_counter));
+
+						if(!file_exists($_ci_haml_cache_path_array_slice)) {
+							mkdir($_ci_haml_cache_path_array_slice);
+						}
+					}
+				} else {
+					mkdir($_ci_haml_cache_path);
+				}
 			}
 
 			$haml = new HamlParser();
