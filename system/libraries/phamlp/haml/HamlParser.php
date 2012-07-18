@@ -956,7 +956,7 @@ class HamlParser {
 			elseif (!empty($attr[6])) {
 				$attributes[$attr[3]] = $this->interpolate($attr[6]);
 			}
-			elseif ($attr[6] === '') {
+			elseif ($attr[6] === '' || $attr[6] == 0) {
 				$attributes[$attr[3]] = $attr[6];
 			}
 			else {
