@@ -516,7 +516,11 @@ class HamlParser {
 			$i = 0;
 			$c = count($this->source);
 			while (empty($nextLine[self::HAML_SOURCE]) && $i <= $c) {
-				$nextLine = $this->source[$i++];
+				if(isset($this->source[$i++])) {
+					$nextLine = $this->source[$i - 1];					
+				} else {
+					$nextLine = 0;
+				}
 			}
 
 			$level = $this->getLevel($nextLine, $line['line'] + $i);
